@@ -123,6 +123,7 @@
 	<!-- <script src="js/jquery-2.2.1.min.js"></script> -->
 	<script type="text/javascript">
 		$(function(){
+			//随机数组
 			function shuffle(arr){
  				var len = arr.length;
  				for(var i = 0; i < len - 1; i++){
@@ -133,16 +134,16 @@
  				}
  				return arr;
 			}
-			var linePro={};
-			var line={};
-			var box={0:[],1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[]};
-			linePro[0]=shuffle(new Array(1,2,3,4,5,6,7,8,9));
+			var linePro={};//行
+			var box={0:[],1:[],2:[],3:[]};//块
+			//核心方法
 			function mathFunc(){
-			var date1=new Date().getTime()
-				line={0:[],1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[]};
-				for(var i=1;i<9;i++){
+			var date1=new Date().getTime();//计时开始
+				//9行生成方法
+				for(var i=1;i<9;i++){//[0]之前生成，不用计算
 					linePro[i]=shuffle(new Array(1,2,3,4,5,6,7,8,9));
 					var _mark=0;
+					//查重
 					$.each(linePro,function(v,ele){
 						if(v!=i){
 							for(var j=0;j<9;j++){
@@ -153,12 +154,12 @@
 							}
 						}
 					});
-					if(_mark==1){
+					if(_mark==1){//重复
 						linePro[i]=[];
 						i=i-1;
-					}else{
-						if(i==2){
-							box[0]=[];
+					}else{//合格
+						if(i==2){//生成三行，验证第一排小九宫
+							box[0]=[];//验证1X1九宫
 							for(var k=0;k<3;k++){
 								for(var l=0;l<3;l++){
 									$.inArray(linePro[k][l],box[0])<0?box[0].push(linePro[k][l]):'';
@@ -169,7 +170,7 @@
 								linePro[2]=[];
 								i=0;
 							}else{
-								box[1]=[];
+								box[1]=[];//验证1X2九宫
 								for(var k=0;k<3;k++){
 									for(var l=3;l<6;l++){
 										$.inArray(linePro[k][l],box[1])<0?box[1].push(linePro[k][l]):'';
@@ -182,8 +183,8 @@
 								}
 							}
 						}
-						if(i==5){
-							box[2]=[];
+						if(i==5){//生成六行，验证第二排小九宫
+							box[2]=[];//验证2X1九宫
 							for(var k=3;k<6;k++){
 								for(var l=0;l<3;l++){
 									$.inArray(linePro[k][l],box[2])<0?box[2].push(linePro[k][l]):'';
@@ -193,7 +194,7 @@
 								linePro[4]=[];
 								linePro[5]=[];
 								i=3;
-							}else{
+							}else{//验证2X2九宫
 								box[3]=[];
 								for(var k=3;k<6;k++){
 									for(var l=3;l<6;l++){
@@ -209,7 +210,9 @@
 						}
 					}
 				}
-				date1=new Date().getTime()-date1;
+				//当1X1,1X2,2X1,2X2四个九宫不重复，则其他五个小九宫肯定不重复
+				//因此可以节约大量运算
+				date1=new Date().getTime()-date1;//时间结束
 				console.log(date1);
 			}
 			$('button').click(function(){
@@ -230,10 +233,12 @@
 			});
 			//开始
 			$('.layer h1').click(function(){
+				linePro={};
+				linePro[0]=shuffle(new Array(1,2,3,4,5,6,7,8,9));
 				var len=$('button.active').attr('data-id');
 				mathFunc();
 				$('section table tr').remove();
-				//造空格
+				//生成表格
 				$.each(linePro,function(j,ele){
 					$('section table').append('<tr>'+$.map(ele,function(ele_k,k){
 						return '<td data-x='+j+' data-y='+k+' data-id='+ele_k+'>'+ele_k+'</td>'
@@ -241,6 +246,7 @@
 				});
 				$('section table tr').eq(2).css({'border-bottom':'2px solid #27cbda'});
 				$('section table tr').eq(5).css({'border-bottom':'2px solid #27cbda'});
+				//造空格
 				for(var i=0;i<8;i++){
 					for(var j=0;j<len;j++){
 						let _arr=shuffle(new Array(0,1,2,3,4,5,6,7,8));
